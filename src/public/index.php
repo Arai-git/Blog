@@ -2,6 +2,11 @@
 
 session_start();
 
+if (!isset($_SESSION['email'])) {
+  header('Location: ./user/signin.php');
+  exit();
+}
+
 $id = $_SESSION['id'];
 $name = $_SESSION['name'];
 
