@@ -9,8 +9,6 @@ if (!isset($_SESSION['email'])) {
     exit('ログインしてください。');
 }
 
-// $errors = $_SESSION['errors'] ?? [];
-// unset($_SESSION['errors']);
 
 $id = filter_input(INPUT_GET, 'id');
 $dbUserName = 'root';

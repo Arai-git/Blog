@@ -54,9 +54,7 @@ if ($clientInfomation['email'] === $email) {
 }
 
 if ($_POST['create']) {
-    //指定したハッシュがパスワードにマッチしているかチェック
     if (password_verify($password, $clientInfomation['password'])) {
-        //DBのユーザー情報をッションに保存
         $_SESSION['name'] = $name;
         $_SESSION['email'] = $email;
         $message = 'ログインしました。';

@@ -10,9 +10,6 @@ if (!isset($_SESSION['email'])) {
 $id = $_SESSION['id'];
 $name = $_SESSION['name'];
 
-// $errors = $_SESSION['errors'] ?? [];
-// unset($_SESSION['errors']);
-
 if ($_POST['create']) {
     $dbUserName = 'root';
     $dbPassWord = 'password';
@@ -58,7 +55,6 @@ if ($_POST['create']) {
         <a href="../mypage.php" name="mypage">マイページ</a><a href="../logout.php" name=logout>ログアウト</a>
     </header>
 
-    <!-- メモの新規作成フォーム -->
     <h1>メモ登録</h1>
     <form action="create.php" method="post">
         <p>タイトル</p>

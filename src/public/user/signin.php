@@ -29,9 +29,7 @@ try {
 }
 
 if ($_POST['create']) {
-    //指定したハッシュがパスワードにマッチしているかチェック
     if (password_verify($password, $clientInfomation['password'])) {
-        //DBのユーザー情報をッションに保存
         $_SESSION['id'] = $clientInfomation['id'];
         $_SESSION['name'] = $clientInfomation['name'];
         $_SESSION['email'] = $clientInfomation['email'];
