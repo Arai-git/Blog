@@ -68,6 +68,8 @@ $user = $statement->fetchAll(PDO::FETCH_ASSOC);
         <div>
           <button type="submit" name="order" value="desc">新しい順</button>
           <button type="submit" name="order" value="asc">古い順</button>
+          <br>
+          <br>
         </div>
       </form>
   </div>
@@ -76,7 +78,7 @@ $user = $statement->fetchAll(PDO::FETCH_ASSOC);
       <tr>
         <td><?php echo $blog['title']; ?></td>
         <td><?php echo $blog['created_at']; ?></td>
-        <td><?php echo $blog['contents']; ?></td>
+        <td><?php echo mb_substr($blog['contents'], 0, 15); ?></td>
         <td><a href="detail.php?id=<?php echo $blog[
             'id'
         ]; ?>">記事詳細へ</a></td>
