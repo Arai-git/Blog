@@ -37,40 +37,20 @@
 <body>
   <header>
     <h3>こんにちは、<?php echo $name; ?> さん</h3>
-    <a href="../mypage.php" name="mypage">マイページ</a>　　<a href="../logout.php" name="logout">ログアウト</a>
-    <h1>blog一覧</h1>
+    <a href="index.php">一覧ページ</a>&emsp;&emsp;<a href="logout.php" name="logout">ログアウト</a>
   </header>
   <h1>記事詳細ページ</h1>
+  <h3><?php echo "タイトル：" . $blog['title']; ?></h3>
   <div>
     <p>投稿日時：<?php echo $blog['created_at']; ?></p>
     <p><?php echo $blog['contents']; ?></p>
-    <form method="get" action="index.php">
-      <input type="submit" value="ページ一覧へ"></input>
+    <a href="edit.php?id=<?php echo $blog['id']; ?>">編集</a>
+    <a href="delete.php?id=<?php echo $blog['id']; ?>">削除</a>
+    <br>
+    <br>
+    <form method="get" action="mypage.php">
+      <input type="submit" value="マイページ一覧へ"></input>
     </form>
   </div>
-  <div>
-    <form action="comment.php?id=<?php echo $blog['id']; ?>" method="post">
-      <h4>この投稿にコメントしますか？</h4>
-      <p>コメント名</p>
-      <input text="" name="commentName">
-      <p>内容</p>
-      <input textarea="" name="comments">
-      <br>
-      <br>
-      <input type="submit" action="" name="submitComment" value="コメント"></input>
-    </form>
-  </div>
-  <h3>コメント一覧</h3>
-  <table>
-    <?php foreach ($comments as $comment): ?>
-        <?php echo $comment['commenter_name']; ?>
-        <br>
-        <?php echo $comment['created_at']; ?>
-        <br>
-        <?php echo $comment['comments']; ?>
-        <br>
-        <br>
-    <? endforeach; ?>
-  </table>
 </body>
 </html>
