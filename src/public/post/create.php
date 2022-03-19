@@ -52,17 +52,16 @@ if ($_POST['create']) {
     <body>
     <header>
         <h3>こんにちは、<?php echo $name; ?> さん</h3>
-        <a href="../mypage.php" name="mypage">マイページ</a><a href="../logout.php" name=logout>ログアウト</a>
+        <a href="index.php">一覧ページ</a>&emsp;&emsp;<a href="logout.php" name="logout">ログアウト</a>
     </header>
-
     <h1>メモ登録</h1>
     <form action="create.php" method="post">
         <p>タイトル</p>
-        <input type="text" name="title" size="20" placeholder="タイトル"></input>
+        <input type="text" name="title" size="20"></input>
         <br>
         <br>
         <p>内容</p>
-        <textarea name="contents" style="width:300px; height:100px;" placeholder="本文"></textarea><br>
+        <textarea name="contents" style="width:300px; height:100px;"></textarea><br>
         <br>
         <input type="submit" action="" name="create" value="新規作成">
     </form>
