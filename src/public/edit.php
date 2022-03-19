@@ -32,25 +32,24 @@ $blog = $statement->fetch(PDO::FETCH_ASSOC);
       <title>メモ編集ページ</title>
   </head>
   <body>
-  <header>
-    <h3>こんにちは、<?php echo $name; ?> さん</h3>
-    <a href="mypage.php" name="mypage">マイページ</a><a href="logout.php" name="logout">ログアウト</a>
-    <h1>blog一覧</h1>
-  </header>
-  <h1>メモ編集</h1>
-  <form action="update.php?id=<?php echo $blog['id']; ?>" method="post">
-    <p>タイトル</p>
-    <input value="<?php echo $blog[
-        'title'
-    ]; ?>" type="text" name="title" size="20"></input>
-    <br>
-    <br>
-    <p>内容</p>
-    <textarea name="content" style="width:300px; height:100px;"><?php echo $blog[
-        'contents'
-    ]; ?></textarea><br>
-    <br>
-    <input type="submit"  value="編集">
-  </form>
+    <header>
+      <h3>こんにちは、<?php echo $name; ?> さん</h3>
+      <a href="index.php">一覧ページ</a>&emsp;&emsp;<a href="logout.php" name="logout">ログアウト</a>
+    </header>
+    <h1>メモ編集</h1>
+    <form action="update.php?id=<?php echo $blog['id']; ?>" method="post">
+      <p>タイトル</p>
+      <input value="<?php echo $blog[
+          'title'
+      ]; ?>" type="text" name="title" size="20"></input>
+      <br>
+      <br>
+      <p>内容</p>
+      <textarea name="contents" style="width:300px; height:100px;"><?php echo $blog[
+          'contents'
+      ]; ?></textarea><br>
+      <br>
+      <input type="submit"  value="編集">
+    </form>
   </body>
 </html>
