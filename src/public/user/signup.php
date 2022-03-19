@@ -1,4 +1,5 @@
 <?php
+session_start();
 $name = filter_input(INPUT_POST, 'name');
 
 if (empty($name)) {
@@ -36,30 +37,21 @@ try {
     $message = $e->getMessage();
 }
 
-if ($clientInfomation['email'] === $email) {
-    $message = '同じメールアドレスが存在します。';
-} else {
-    $hashPassWord = password_hash($passWord, PASSWORD_DEFAULT);
-    $hashConfirmPassWord = password_hash($confirmPassWord, PASSWORD_DEFAULT);
-    $sql =
-        'INSERT INTO users (name, email, password) VALUES (:name, :email, :password)';
-    $statement = $pdo->prepare($sql);
-    $statement->bindValue(':name', $name, PDO::PARAM_STR);
-    $statement->bindValue(':email', $email, PDO::PARAM_STR);
-    $statement->bindValue(':password', $hashConfirmPassWord, PDO::PARAM_STR);
-    $statement->execute();
-    $message = '会員登録が完了しました。';
-    $link = '<a href="../index.php">ブログ一覧ページ</a>';
-    echo $message . "\n" . $link;
-}
-
 if ($_POST['create']) {
-    if (password_verify($password, $clientInfomation['password'])) {
-        $_SESSION['name'] = $name;
-        $_SESSION['email'] = $email;
-        $message = 'ログインしました。';
-        $link = '<a href="../index.php">ホーム</a>';
-        echo $message . "\n" . $link;
+    if ($clientInfomation['email'] === $email) {
+        $message = '同じメールアドレスが存在します。';
+        echo $message;
+    } else {
+        $hashPassWord = password_hash($passWord, PASSWORD_DEFAULT);
+        $hashConfirmPassWord = password_hash($confirmPassWord, PASSWORD_DEFAULT);
+        $sql =
+            'INSERT INTO users (name, email, password) VALUES (:name, :email, :password)';
+        $statement = $pdo->prepare($sql);
+        $statement->bindValue(':name', $name, PDO::PARAM_STR);
+        $statement->bindValue(':email', $email, PDO::PARAM_STR);
+        $statement->bindValue(':password', $hashConfirmPassWord, PDO::PARAM_STR);
+        $statement->execute();
+        header('Location: signin.php');
     }
 }
 ?>
@@ -73,20 +65,24 @@ if ($_POST['create']) {
     <body>
       <header>
         <h3>こんにちは、<?php echo $name; ?> さん</h3>
-        <a href="../mypage.php" name="mypage">マイページ</a><a href="../logout.php" name="logout">ログアウト</a>
-        <h1>blog一覧</h1>
       </header>
       <h1>会員登録</h1>
       <form action="" method="post">
-          <input type="text" name="name" size="50" placeholder="User name"></input>
+          <input type="text" name="name" size="25" placeholder="User name"></input>
           <br>
-          <input type="text" name="email" size="50" placeholder="Email" required></input>
           <br>
-          <input type="password" name="passWord" size="50" placeholder="PassWord" required></input>
+          <input type="text" name="email" size="25" placeholder="Email" required></input>
           <br>
-          <input type="password" name="confirmPassWord" size="50" placeholder="確認のためもう一度ご入力お願いいたします" required></input>
+          <br>
+          <input type="password" name="passWord" size="25" placeholder="PassWord" required></input>
+          <br>
+          <br>
+          <input type="password" name="confirmPassWord" size="25" placeholder="確認用Password" required></input>
+          <br>
           <br>
           <input type="submit" name="create" value="アカウント作成">
+          <br>
+          <br>
           <br>
           <a href="signin.php">ログイン画面へ</a>
       </form>
