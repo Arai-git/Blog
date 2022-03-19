@@ -31,12 +31,12 @@ $blogs = $statement->fetchAll(PDO::FETCH_ASSOC);
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>blog一覧</title>
+  <title>マイページ一覧</title>
 </head>
 <body>
   <header>
     <h3>こんにちは、<?php echo $name; ?> さん</h3>
-    <a href="mypage.php" name="mypage">マイページ</a><a href="logout.php" name="logout">ログアウト</a>
+    <a href="index.php">一覧ページ</a>&emsp;&emsp;<a href="logout.php" name="logout">ログアウト</a>
     <h1>blog一覧</h1>
   </header>
   <div>
@@ -47,17 +47,14 @@ $blogs = $statement->fetchAll(PDO::FETCH_ASSOC);
   <table>
     <?php foreach ($blogs as $blog): ?>
       <tr>
-        <td><?php echo $blog['title']; ?></td>
+      <td><?php echo $blog['title']; ?></td>
         <td><?php echo $blog['created_at']; ?></td>
-        <td><?php echo $blog['content']; ?><td>
+        <td><?php echo mb_substr($blog['contents'], 0,15); ?><td>
         <td><a href="myarticledetail.php?id=<?php echo $blog[
             'id'
         ]; ?>">記事詳細へ</a></td>
       </tr>
     <?php endforeach; ?>
   </table>
-
-  
-  
 </body>
 </html>
