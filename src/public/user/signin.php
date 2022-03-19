@@ -1,12 +1,6 @@
 <?php
 
 session_start();
-$id = $_SESSION['id'];
-$name = $_SESSION['name'];
-
-if (empty($name)) {
-    $name = 'ゲスト';
-}
 
 $email = filter_input(INPUT_POST, 'email');
 $password = filter_input(INPUT_POST, 'password');
@@ -34,14 +28,17 @@ if ($_POST['create']) {
         $_SESSION['name'] = $clientInfomation['name'];
         $_SESSION['email'] = $clientInfomation['email'];
         $_SESSION['password'] = $clientInfomation['password'];
-        $message = 'ログインしました。';
-        $link = '<a href="../index.php">ホーム</a>';
-        echo $message . "\n" . $link;
+        header('Location: ../index.php');
     } else {
         $message = 'メールアドレスもしくはパスワードが間違っています。';
-        $link = '<a href="signin.php">戻る</a>';
-        echo $message . "\n" . $link;
+        echo $message;
     }
+}
+
+if (empty($_SESSION['name'])) {
+    $name = 'ゲスト';
+} else {
+    $name = $_SESSION['name'];
 }
 ?>
 
@@ -54,16 +51,17 @@ if ($_POST['create']) {
     <body>
     <header>
       <h3>こんにちは、<?php echo $name; ?> さん</h3>
-      <a href="../mypage.php" name="mypage">マイページ</a><a href="../logout.php" name="logout">ログアウト</a>
-      <h1>blog一覧</h1>
     </header>
     <h1>ログイン</h1>
     <form action="" method="post">
         <input type="text" name="email" size="20" placeholder="Email"></input>
         <br>
+        <br>
         <input type="password" name="password" size="20" placeholder="Password"></input>
         <br>
+        <br>
         <input type="submit" name="create" value="ログイン">
+        <br>
         <br>
         <a href="signup.php">アカウントを作る</a>
     </form>
