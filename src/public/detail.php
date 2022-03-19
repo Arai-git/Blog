@@ -22,7 +22,7 @@
   $pdo = new PDO("mysql:host=mysql;dbname=blog;charset=utf8", $dbUserName, $dbPassWord);
   $sql = "SELECT * FROM comments WHERE blog_id = :id";
   $statement = $pdo->prepare($sql);
-  $statement->execute([':id' => $id]);
+  $statement->execute([':id' => $blogId]);
   $comments = $statement->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -37,16 +37,18 @@
 <body>
   <header>
     <h3>こんにちは、<?php echo $name; ?> さん</h3>
-    <a href="mypage.php" name="mypage">マイページ</a>　　<a href="logout.php" name="logout">ログアウト</a>
-    <h1>blog一覧</h1>
+    <a href="index.php">一覧ページ</a>&emsp;&emsp;<a href="logout.php" name="logout">ログアウト</a>
   </header>
-  <h1>記事詳細ページ</h1>
   <div>
+    <h1>記事詳細ページ</h1>
     <p>投稿日時：<?php echo $blog['created_at']; ?></p>
     <p><?php echo $blog['contents']; ?></p>
     <form method="get" action="index.php">
       <input type="submit" value="ページ一覧へ"></input>
     </form>
+    <br>
+    <br>
+    <br>
   </div>
   <div>
     <form action="comment.php?id=<?php echo $blog['id']; ?>" method="post">
@@ -58,6 +60,9 @@
       <br>
       <br>
       <input type="submit" action="" name="submitComment" value="コメント"></input>
+      <br>
+      <br>
+      <br>
     </form>
   </div>
   <h3>コメント一覧</h3>
