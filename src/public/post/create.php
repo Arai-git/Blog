@@ -52,7 +52,7 @@ if ($_POST['create']) {
     <body>
     <header>
         <h3>こんにちは、<?php echo $name; ?> さん</h3>
-        <a href="index.php">一覧ページ</a>&emsp;&emsp;<a href="logout.php" name="logout">ログアウト</a>
+        <a href="../mypage.php">マイページ</a>&emsp;&emsp;<a href="../logout.php" name="logout">ログアウト</a>
     </header>
     <h1>メモ登録</h1>
     <form action="create.php" method="post">
