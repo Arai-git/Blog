@@ -1,5 +1,9 @@
 <?php
 
+require_once(__DIR__ . '/../app/Lib/redirect.php');
+require_once(__DIR__ . '/../app/Lib/session.php');
+require_once(__DIR__ . '/../app/Lib/seachOrder.php');
+
 session_start();
 
 if (!isset($_SESSION['id'])) {
@@ -10,38 +14,7 @@ if (!isset($_SESSION['id'])) {
 $id = $_SESSION['id'];
 $name = $_SESSION['name'];
 
-if (isset($_GET['order'])) {
-    $direction = $_GET['order'];
-} else {
-    $direction = 'desc';
-}
-
-if (isset($_GET['search'])) {
-    $title = '%' . $_GET['search'] . '%';
-    $content = '%' . $_GET['search'] . '%';
-} else {
-    $title = '%%';
-    $content = '%%';
-}
-
-$dbUserName = 'root';
-$dbPassWord = 'password';
-$pdo = new PDO(
-    'mysql:host=mysql;dbname=blog;charset=utf8',
-    $dbUserName,
-    $dbPassWord
-);
-$sql = "SELECT * FROM blogs WHERE title LIKE :title OR contents LIKE :contents ORDER BY id $direction";
-$statement = $pdo->prepare($sql);
-$statement->bindValue(':title', $title, PDO::PARAM_STR);
-$statement->bindValue(':contents', $content, PDO::PARAM_STR);
-$statement->execute();
-$blogs = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-$sql = 'SELECT * FROM users';
-$statement = $pdo->prepare($sql);
-$statement->execute();
-$user = $statement->fetchAll(PDO::FETCH_ASSOC);
+$blogs = seachOrder();
 ?>
 
 <!DOCTYPE html>
@@ -52,10 +25,12 @@ $user = $statement->fetchAll(PDO::FETCH_ASSOC);
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>blog一覧</title>
 </head>
+
+<?php require_once(__DIR__ . '/../app/Lib/header.php'); ?>
+
 <body>
   <header>
     <h3>こんにちは、<?php echo $name; ?> さん</h3>
-    <a href="mypage.php" name="mypage">マイページ</a>&emsp;&emsp;<a href="logout.php" name=logout>ログアウト</a>
   </header>
   <div>
     <h1>blog一覧</h1>

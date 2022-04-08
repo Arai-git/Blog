@@ -1,29 +1,22 @@
 <?php
-  session_start();
-  
-  $sessionId = $_SESSION['id'];
-  $name = $_SESSION['name'];
+require_once(__DIR__ . '/../app/Lib/redirect.php');
+require_once(__DIR__ . '/../app/Lib/findBlogById.php');
+require_once(__DIR__ . '/../app/Lib/findCommentByBlogId.php');
 
-  $blogId = filter_input(INPUT_GET, 'id');
-  
-  if (!isset($_SESSION['email'])) {
-    header('Location: ./user/signin.php');
-    exit('ログインしてください。');
-  }
+session_start();
 
-  $dbUserName = "root";
-  $dbPassWord = "password";
-  $pdo = new PDO("mysql:host=mysql;dbname=blog;charset=utf8", $dbUserName, $dbPassWord);
-  $sql = 'SELECT * FROM blogs WHERE id = :id';
-  $statement = $pdo->prepare($sql);
-  $statement->execute([':id' => $blogId]);
-  $blog = $statement->fetch(PDO::FETCH_ASSOC);
-  
-  $pdo = new PDO("mysql:host=mysql;dbname=blog;charset=utf8", $dbUserName, $dbPassWord);
-  $sql = "SELECT * FROM comments WHERE blog_id = :id";
-  $statement = $pdo->prepare($sql);
-  $statement->execute([':id' => $blogId]);
-  $comments = $statement->fetchAll(PDO::FETCH_ASSOC);
+$userId = $_SESSION['id'];
+$name = $_SESSION['name'];
+
+$blogId = filter_input(INPUT_GET, 'id');
+
+if (!isset($userId)) {
+  header('Location: ./user/signin.php');
+  exit('ログインしてください。');
+}
+
+$blog = findBlogById($blogId);
+$comments = findCommentByBlogId($blogId);
 ?>
 
 <!DOCTYPE html>
