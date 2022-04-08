@@ -1,57 +1,28 @@
 <?php
-$dbUserName = 'root';
-$dbPassword = 'password';
-$pdo = new PDO(
-    'mysql:host=mysql; dbname=blog; charset=utf8',
-    $dbUserName,
-    $dbPassword
-);
+require_once(__DIR__ . '/../../app/Lib/findUserByMail.php');
+require_once(__DIR__ . '/../../app/Lib/redirect.php');
+require_once(__DIR__ . '/../../app/Lib/createUser.php');
+require_once(__DIR__ . '/../../app/Lib/session.php');
 
+session_start();
 $email = filter_input(INPUT_POST, 'email');
 $name = filter_input(INPUT_POST, 'name');
 $password = filter_input(INPUT_POST, 'password');
 $confirmPassword = filter_input(INPUT_POST, 'confirmPassword');
 
-session_start();
-$_SESSION['email'] = $email;
-$_SESSION['name'] = $name;
-
-
-if (empty($password) || empty($confirmPassword)) {
-  $_SESSION['errors'][] = 'パスワードを入力してください';
-  header('Location: ./signup.php');
-  exit();
+if (empty($password) || empty($confirmPassword)) appendError("パスワードを入力してください");
+if ($password !== $confirmPassword) appendError("パスワードが一致しません");
+if (!empty($_SESSION['errors'])) {
+  $_SESSION['formInputs']['name'] = $name;
+  $_SESSION['formInputs']['email'] = $email;
+  redirect('signup.php');
 }
 
-if ($password !== $confirmPassword) {
-  $_SESSION['errors'][] = 'パスワードが一致しません';
-  header('Location: ./signup.php');
-  exit();
-}
+$user = findUserByMail($email);
+if (!is_null($user)) appendError("すでに登録済みのメールアドレスです");
+if (!empty($_SESSION['errors'])) redirect('signup.php');
 
-$sql = 'select * from users where email=:email';
-$statement = $pdo->prepare($sql);
-$statement->bindValue(':email', $email, PDO::PARAM_STR);
-$statement->execute();
-$user = $statement->fetch();
-
-if ($user) {
-    $_SESSION['errors'][] = 'すでに登録済みのメールアドレスです';
-    header('Location: ./signup.php');
-    exit();
-}
-
-$hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-$sql =
-    'INSERT INTO `users`(`name`, `email`, `password`) VALUES (:userName, :email, :password)';
-$statement = $pdo->prepare($sql);
-$statement->bindValue(':userName', $name, PDO::PARAM_STR);
-$statement->bindValue(':email', $email, PDO::PARAM_STR);
-$statement->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
-$statement->execute();
-
-$_SESSION['registed'] = '登録できました。';
-header('Location: ./signin.php');
-exit();
+createUser($name, $email, $password);
+$_SESSION['registed'] = "登録できました。";
+redirect('signin.php');
 ?>

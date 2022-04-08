@@ -1,17 +1,14 @@
 <?php
 
+require_once(__DIR__ . '/../../app/Lib/session.php');
+
 session_start();
-$registed = $_SESSION['registed'] ?? '';
-$error = $_SESSION['errors'] ?? '';
+$errors = errorsInit();
+$registed = registedInit();
 
-$_SESSION['registed'] = '';
-unset($_SESSION['errors']);
-
-if(empty($name)) {
-    $name = "ゲスト";
-}
+$name = $_SESSION['formInputs']['name'] ?? 'ゲスト';
+$mail = $_SESSION['formInputs']['mail'] ?? '';
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -21,15 +18,14 @@ if(empty($name)) {
     </head>
     <body>
     <header>
-      <h3>こんにちは、<?php echo $name; ?> さん</h3>
+        <h3>こんにちは、<?php echo $name; ?> さん</h3>
     </header>
     <h1>ログイン</h1>
+    <?php foreach ($errors as $error): ?>
+        <p><?php echo $error; ?></p>
+    <?php endforeach; ?>
     <form action="signin_complete.php" method="post">
-        <p><input type=“text” name="email" type="mail" required placeholder="Email" value="<?php if (
-            isset($_SESSION['email'])
-        ) {
-            echo $_SESSION['email'];
-        } ?>"></p>
+        <p><input type=“text” name="email" type="mail" required placeholder="Email" value="<?php echo $mail; ?>"></p>
         <p><input type="password" placeholder="password" name="password" required></p>
         <button type="submit">ログイン</button>
         <br>
