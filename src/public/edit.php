@@ -1,28 +1,20 @@
 <?php
+require_once(__DIR__ . '/../app/Lib/findBlogById.php');
+require_once(__DIR__ . '/../app/Lib/redirect.php');
+require_once(__DIR__ . '/../app/Lib/session.php');
+
 session_start();
 
-$id = $_SESSION['id'];
+$userId = $_SESSION['id'];
 $name = $_SESSION['name'];
 
-if (!isset($_SESSION['email'])) {
+if (!isset($userId)) {
     header('Location: ./user/signin.php');
     exit('ログインしてください。');
 }
 
-
-$id = filter_input(INPUT_GET, 'id');
-$dbUserName = 'root';
-$dbPassWord = 'password';
-$pdo = new PDO(
-    'mysql:host=mysql; dbname=blog; charset=utf8',
-    $dbUserName,
-    $dbPassWord
-);
-
-$sql = 'SELECT * FROM blogs WHERE id = :id';
-$statement = $pdo->prepare($sql);
-$statement->execute([':id' => $id]);
-$blog = $statement->fetch(PDO::FETCH_ASSOC);
+$blogId = filter_input(INPUT_GET, 'id');
+$blog = findBlogById($blogId);
 ?>
 
 <!DOCTYPE html>

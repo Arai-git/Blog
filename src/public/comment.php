@@ -1,32 +1,20 @@
 <?php
-session_start();
+require_once(__DIR__ . '/../app/Lib/redirect.php');
+require_once(__DIR__ . '/../app/Lib/createComment.php');
 
-$blogId = filter_input(INPUT_GET, 'id');
+session_start();
 $userId = $_SESSION['id'];
 
-if ($_POST['submitComment']) {
-    $commentName = filter_input(INPUT_POST, 'commentName');
-    $comments = filter_input(INPUT_POST, 'comments');
-}
-
-if ($_POST['submitComment']) {
-    $dbUserName = 'root';
-    $dbPassWord = 'password';
-    $pdo = new PDO(
-        'mysql:host=mysql;dbname=blog;charset=utf8',
-        $dbUserName,
-        $dbPassWord
-    );
-    $sql =
-        'INSERT INTO comments (user_id, blog_id, commenter_name, comments) VALUES (:userId, :blogId, :commentName, :comments)';
-    $statement = $pdo->prepare($sql);
-    $statement->bindValue(':userId', $userId, PDO::PARAM_INT);
-    $statement->bindValue(':blogId', $blogId, PDO::PARAM_INT);
-    $statement->bindValue(':commentName', $commentName, PDO::PARAM_STR);
-    $statement->bindValue(':comments', $comments, PDO::PARAM_STR);
-    $statement->execute();
-
-    header('Location: detail.php?id=' . $blogId);
+if(empty($userId)) {
+    header('Location: ./user/signin.php');
     exit();
 }
+
+$blogId = filter_input(INPUT_GET, 'id');
+$commentName = filter_input(INPUT_POST, 'commentName');
+$comments = filter_input(INPUT_POST, 'comments');
+$createComment = createComment($userId, $blogId, $commentName, $comments);
+
+header('Location: detail.php?id=' . $blogId);
+exit();
 ?>

@@ -1,4 +1,8 @@
 <?php
+  require_once(__DIR__ . '/../app/Lib/redirect.php');
+  require_once(__DIR__ . '/../app/Lib/findBlogById.php');
+  require_once(__DIR__ . '/../app/Lib/findCommentByBlogID.php');
+
   session_start();
 
   $sessionId = $_SESSION['id'];
@@ -6,24 +10,13 @@
 
   $blogId = filter_input(INPUT_GET, 'id');
   
-  if (!isset($_SESSION['email'])) {
+  if (!isset($sessionId)) {
     header('Location: ./user/signin.php');
     exit('ログインしてください。');
   }
 
-  $dbUserName = "root";
-  $dbPassWord = "password";
-  $pdo = new PDO("mysql:host=mysql;dbname=blog;charset=utf8", $dbUserName, $dbPassWord);
-  $sql = 'SELECT * FROM blogs WHERE id = :id';
-  $statement = $pdo->prepare($sql);
-  $statement->execute([':id' => $blogId]);
-  $blog = $statement->fetch(PDO::FETCH_ASSOC);
-  
-  $pdo = new PDO("mysql:host=mysql;dbname=blog;charset=utf8", $dbUserName, $dbPassWord);
-  $sql = "SELECT * FROM comments WHERE blog_id = :id";
-  $statement = $pdo->prepare($sql);
-  $statement->execute([':id' => $id]);
-  $comments = $statement->fetchAll(PDO::FETCH_ASSOC);
+  $blog = findBlogById($blogId);
+  $comments = findCommentByBlogId($blogId);
 ?>
 
 <!DOCTYPE html>
