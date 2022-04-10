@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../Lib/pdoInit.php');
 
-function createComment(int $userId, int $blogId, string $commentName, string $comments) : void
+function createComment(int $userId, int $blogId, string $commentName, string $comments): void
 {
   $pdo = pdoInit();
   $sql =
