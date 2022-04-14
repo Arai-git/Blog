@@ -1,14 +1,13 @@
 <?php
 
-require_once(__DIR__ . '/../app/Lib/redirect.php');
-require_once(__DIR__ . '/../app/Lib/session.php');
+
+require_once __DIR__ . '/../app/Lib/redirect.php';
+require_once __DIR__ . '/../app/Lib/Session.php';
 require_once(__DIR__ . '/../app/Lib/seachOrder.php');
 
-session_start();
-
-if (!isset($_SESSION['id'])) {
-  header('Location: ./user/signin.php');
-  exit();
+$session = Session::getInstance();
+if (!isset($_SESSION['formInputs']['userId'])) {
+    redirect('./user/signin.php');
 }
 
 $id = $_SESSION['id'];

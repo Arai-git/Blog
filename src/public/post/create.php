@@ -1,10 +1,11 @@
 <?php
 
-require_once(__DIR__ . '/../../app/Lib/session.php');
+require_once __DIR__ . '/../../app/Lib/session.php';
 
-session_start();
-$errors = errorsInit();
-$id = $_SESSION['id'];
+$session = Session::getInstance();
+$errors = $session->popAllErrors();
+$successRegistedMessage = $session->getMessage();
+
 $name = $_SESSION['name'];
 
 if (!isset($id)) {

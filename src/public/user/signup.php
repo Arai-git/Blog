@@ -1,10 +1,20 @@
 <?php
-require_once(__DIR__ . '/../../app/Lib/session.php');
+require_once __DIR__ . '/../../app/Lib/session.php';
 
 session_start();
-$errors = errorsInit();
-$name = $_SESSION['formInputs']['name'] ?? '';
-$mail = $_SESSION['formInputs']['mail'] ?? '';
+
+$session = Session::getInstance();
+$errors = $session->popAllErrors();
+$formInputs = $session->getFormInputs();
+
+$userName = $formInputs['userName'] ?? '';
+$mail = $formInputs['mail'] ?? '';
+// require_once(__DIR__ . '/../../app/Lib/session.php');
+
+// session_start();
+// $errors = errorsInit();
+// $name = $_SESSION['formInputs']['name'] ?? '';
+// $mail = $_SESSION['formInputs']['mail'] ?? '';
 ?>
 
 <!DOCTYPE html>
