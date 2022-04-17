@@ -1,13 +1,9 @@
 <?php
+require_once __DIR__ . '/../../app/Lib/session.php';
 
-require_once(__DIR__ . '/../../app/Lib/session.php');
-
-session_start();
-$errors = errorsInit();
-$registed = registedInit();
-
-$name = $_SESSION['formInputs']['name'] ?? 'ゲスト';
-$mail = $_SESSION['formInputs']['mail'] ?? '';
+$session = Session::getInstance();
+$errors = $session->popAllErrors();
+$successRegistedMessage = $session->getMessage();
 ?>
 
 <!DOCTYPE html>
@@ -17,9 +13,6 @@ $mail = $_SESSION['formInputs']['mail'] ?? '';
         <title>ログイン</title>
     </head>
     <body>
-    <header>
-        <h3>こんにちは、<?php echo $name; ?> さん</h3>
-    </header>
     <h1>ログイン</h1>
     <?php foreach ($errors as $error): ?>
         <p><?php echo $error; ?></p>
