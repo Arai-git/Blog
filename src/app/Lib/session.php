@@ -1,147 +1,104 @@
 <?php
+//use:このクラスをこのファイルで使う宣言
+use app\Lib\SessionKey;
+
+/**
+ * セッション情報($_SESSION)をカプセル化したシングルトンクラス
+ */
 final class Session
-{   
-    /**
-      * セッション説明
-      *
-      * セッションを開始させる為に、まずgetInstanceで呼び出すごとに現在の日付と時間に初期化された状態で、オブジェクトを返す。
-      * newでselfクラス化させ、$instanceを返すようにする。
-      * インスタンスが生成されていなければ、start()に遷移し、セッションをスタートさせる。
-      * インスタンスが生成されていたら、そのままセッションを返す。
-      * 
-      * staticプロパティで$instanceは、session_start()のみの処理をさせることを限定している。
-      * それぞれのメソッドにある＄_SESSIONは、const定数に入った値をキーに指定し、それぞれ取得できるようにしている。
-      */
+{
+	private static $instance;
 
-    private const ERROR_KEY = 'errors';
-    private const FORM_INPUTS_KEY = 'formInputs';
-    private const MESSAGE_KEY = 'message';
-    private static $instance;
+	// シングルトンクラスはnewさせないのでprivateにする
+	private function __construct()
+	{
+	}
 
-    private function __construct()
-    {
-    }
+	public static function getInstance(): self
+	{
+		if (!isset(self::$instance)) {
+			self::$instance = new self();
+		}
 
-    /**
-      * 1回目であれば自身のインスタンスを生成し、返す。
-      * セッション処理の開始をする。
-      * 
-      * @return self
-      */
-    public static function getInstance(): self
-    {
-        if (!isset(self::$instance)) {
-            self::$instance = new self();
-        }
+		// まだセッションスタートしてなければスタートする
+		self::start();
 
-        self::start();
-        return self::$instance;
-    }
+		return self::$instance;
+	}
 
-    /**
-      * セッション処理が開始されていなければ開始する。
-      * 
-      * @return void
-      */
-    private static function start(): void
-    {
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-    }
+	/**
+	 * セッションがスタートしていなかったら、セッションをスタートさせる
+	 */
+	private static function start(): void
+	{
+		if (!isset($_SESSION)) {
+			session_start();
+		}
+	}
 
-    /**
-      * セッションにエラー文を保存する。
-      * 
-      * @param string $errorMessage エラー文
-      * @return void
-      */
+	public function appendError(string $errorMessage): void
+	{
+		$_SESSION[SessionKey::ERROR_KEY][] = $errorMessage;
+	}
 
-    public function appendError(string $errorMessage): void
-    {
-        $_SESSION[self::ERROR_KEY][] = $errorMessage;
-    }
+	/**
+	 * エラーメッセージを変数に変換した後、セッションキーをclear
+	 */
+	public function popAllErrors(): array
+	{
+		$errors = $_SESSION[SessionKey::ERROR_KEY] ?? [];
+		$erorrKey = new SessionKey(SessionKey::ERROR_KEY);
+		$this->clear($erorrKey);
+		return $errors;
+	}
 
-    /**
-      * セッションに保存されているエラー文を返す。
-      * セッションに保存されているエラー文を削除する。
-      * 
-      * @return array
-      */
-    public function popAllErrors(): array
-    {
-        $errors = $_SESSION[self::ERROR_KEY] ?? [];
-        $this->clear(self::ERROR_KEY);
-        return $errors;
-    }
+	/**
+	 * セッションエラーキーが入っていたら、セッションキーエラーをそのまま返す
+	 */
+	public function existsErrors(): bool
+	{
+		return !empty($_SESSION[SessionKey::ERROR_KEY]);
+	}
 
-    /**
-      * エラー文がセッションに保存されていたら「true」を返す。
-      * エラー文がセッションに保存されていなければ「false」を返す。
-      * 
-      * @return bool
-      */
-    public function existsErrors(): bool
-    {
-        return !empty($_SESSION[self::ERROR_KEY]);
-    }
+	/**
+	 * 以下のクラスから、$SessionKeyをSessionKeyクラスから
+	 * 指定できるようにカプセル化する
+	 */
+	public function clear(SessionKey $sessionKey): void
+	{
+		unset($_SESSION[$sessionKey->value()]);
+	}
 
-    /**
-      * 引数で受け取ったキーのセッションに保存されているデータを削除する。
-      * 
-      * @param string $sessionKey 削除するセッションキー
-      * @return void
-      */
-    public function clear(string $sessionKey): void
-    {
-        unset($_SESSION[$sessionKey]);
-    }
+	/**
+	 * 'formInputs'がキーとなる多次元配列、ユーザーIDとユーザーネーム代入
+	 */
+	public function setFormInputs(SessionKey $sessionKey, $value): void
+	{
+		$_SESSION[$sessionKey->value()] = $value;
+	}
 
-    /**
-      * 入力されたフォームのデータをセッションに保存する。
-      * ex.
-      * フォーム送信時にエラーになった場合、入力されていた情報をフォームにセットし直す場合などに使用。
-      * 
-      * @param array $formInputs 入力されたフォームのデータ
-      * @return void
-      */
-    public function setFormInputs(array $formInputs): void
-    {
-        foreach ($formInputs as $key => $formInput) {
-            $_SESSION[self::FORM_INPUTS_KEY][$key] = $formInput;
-        }
-    }
+	public function getFormInputs(): array
+	{
+		return $_SESSION[SessionKey::FORM_INPUTS_KEY] ?? [];
+	}
 
-    /**
-      * セッションに保存されているフォームのデータを返す。
-      * 
-      * @return array
-      */
-    public function getFormInputs(): array
-    {
-        return $_SESSION[self::FORM_INPUTS_KEY] ?? [];
-    }
+	/**
+	 * キーが'message'へエラーメッセージを代入
+	 */
+	public function setMessage(SessionKey $sessionKey, $message): void
+	{
+		$_SESSION[$sessionKey->value()] = $message;
+	}
 
-    /**
-      * セッションにメッセージデータを保存する。
-      * 
-      * @param string $message メッセージデータ
-      * @return void
-      */
-    public function setMessage($message): void
-    {
-        $_SESSION[self::MESSAGE_KEY] = $message;
-    }
-
-   /**
-      * セッションに保存されているメッセージデータを返す。
-      * 
-      * @return string
-      */
-    public function getMessage(): string
-    {
-        $message = $_SESSION[self::MESSAGE_KEY] ?? '';
-        $this->clear(self::MESSAGE_KEY);
-        return $message;
-    }
+	/**
+	 * メッセージを$messageに格納後、メッセージキーを削除
+	 * メッセージを返り値に指定
+	 */
+	public function getMessage(): string
+	{
+		$message = $_SESSION[SessionKey::MESSAGE_KEY] ?? "";
+		$messageKey = new SessionKey(SessionKey::MESSAGE_KEY);
+		$this->clear($messageKey);
+		return $message;
+	}
 }

@@ -9,7 +9,7 @@ $id = $_SESSION['id'];
 $title = filter_input(INPUT_POST, 'title');
 $contents = filter_input(INPUT_POST, 'contents');
 
-if (empty($title) || empty($contents)) appendError("タイトルまたは本文が記入されていません！");
+if (empty($title) || empty($contents)) $session->appendError("タイトルまたは本文が記入されていません！");
 if (!empty($_SESSION['errors'])) {
   $_SESSION['formInputs']['email'] = $email;
   $_SESSION['formInputs']['name'] = $name;
