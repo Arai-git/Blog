@@ -26,9 +26,9 @@ final class Session
 		return self::$instance;
 	}
 
-  /**
-   * セッションがスタートしていなかったら、セッションをスタートさせる
-   */
+	/**
+	 * セッションがスタートしていなかったら、セッションをスタートさせる
+	 */
 	private static function start(): void
 	{
 		if (!isset($_SESSION)) {
@@ -41,9 +41,9 @@ final class Session
 		$_SESSION[SessionKey::ERROR_KEY][] = $errorMessage;
 	}
 
-  /**
-   * エラーメッセージを変数に変換した後、セッションキーをclear
-   */
+	/**
+	 * エラーメッセージを変数に変換した後、セッションキーをclear
+	 */
 	public function popAllErrors(): array
 	{
 		$errors = $_SESSION[SessionKey::ERROR_KEY] ?? [];
@@ -52,9 +52,9 @@ final class Session
 		return $errors;
 	}
 
-  /**
-   * セッションエラーキーが入っていたら、セッションキーエラーをそのまま返す
-   */
+	/**
+	 * セッションエラーキーが入っていたら、セッションキーエラーをそのまま返す
+	 */
 	public function existsErrors(): bool
 	{
 		return !empty($_SESSION[SessionKey::ERROR_KEY]);
@@ -69,9 +69,9 @@ final class Session
 		unset($_SESSION[$sessionKey->value()]);
 	}
 
-  /**
-   *	'formInputs'がキーとなる多次元配列、ユーザーIDとユーザーネーム代入
-   */
+	/**
+	 * 'formInputs'がキーとなる多次元配列、ユーザーIDとユーザーネーム代入
+	 */
 	public function setFormInputs(SessionKey $sessionKey, $value): void
 	{
 		$_SESSION[$sessionKey->value()] = $value;
@@ -82,18 +82,18 @@ final class Session
 		return $_SESSION[SessionKey::FORM_INPUTS_KEY] ?? [];
 	}
 
-  /**
-   * キーが'message'へエラーメッセージを代入
-   */
+	/**
+	 * キーが'message'へエラーメッセージを代入
+	 */
 	public function setMessage(SessionKey $sessionKey, $message): void
 	{
 		$_SESSION[$sessionKey->value()] = $message;
 	}
-	
-  /**
-   * メッセージを$messageに格納後、メッセージキーを削除
+
+	/**
+	 * メッセージを$messageに格納後、メッセージキーを削除
 	 * メッセージを返り値に指定
-   */
+	 */
 	public function getMessage(): string
 	{
 		$message = $_SESSION[SessionKey::MESSAGE_KEY] ?? "";
