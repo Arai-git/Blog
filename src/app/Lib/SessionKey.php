@@ -18,7 +18,7 @@ final class SessionKey
 		self::FORM_INPUTS_KEY,
 		self::MESSAGE_KEY
 	];
-
+	
 	private $value;
 
 	/**

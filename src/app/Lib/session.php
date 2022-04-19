@@ -41,7 +41,6 @@ final class Session
 		$_SESSION[SessionKey::ERROR_KEY][] = $errorMessage;
 	}
 
-
   /**
    * エラーメッセージを変数に変換した後、セッションキーをclear
    */
@@ -52,7 +51,6 @@ final class Session
 		$this->clear($erorrKey);
 		return $errors;
 	}
-
 
   /**
    * セッションエラーキーが入っていたら、セッションキーエラーをそのまま返す
@@ -91,7 +89,7 @@ final class Session
 	{
 		$_SESSION[$sessionKey->value()] = $message;
 	}
-
+	
   /**
    * メッセージを$messageに格納後、メッセージキーを削除
 	 * メッセージを返り値に指定
