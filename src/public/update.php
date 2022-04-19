@@ -7,8 +7,9 @@ $id = filter_input(INPUT_GET, 'id');
 $title = filter_input(INPUT_POST, 'title');
 $contents = filter_input(INPUT_POST, 'contents');
 
+$session = Session::getInstance();
 if (empty($title) || empty($contents)) {
-    appendError('タイトルまたは本文が記入されていません！');
+    $session->appendError('タイトルまたは本文が記入されていません！');
     header('Location: edit.php');
 }
 
