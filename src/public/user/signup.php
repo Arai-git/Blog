@@ -1,14 +1,10 @@
 <?php
-require_once __DIR__ . '/../../app/Lib/session.php';
-
 session_start();
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
 
-$session = Session::getInstance();
-$errors = $session->popAllErrors();
-$formInputs = $session->getFormInputs();
-
-$userName = $formInputs['userName'] ?? '';
-$mail = $formInputs['mail'] ?? '';
+$name = $_SESSION['formInputs']['name'] ?? '';
+$email = $_SESSION['formInputs']['email'] ?? '';
 ?>
 
 <!DOCTYPE html>

@@ -1,43 +1,36 @@
 <?php
-require_once __DIR__ . '/../../app/Lib/pdoInit.php';
-require_once __DIR__ . '/../../app/Lib/findUserByMail.php';
-require_once __DIR__ . '/../../app/Lib/createUser.php';
-require_once __DIR__ . '/../../app/Lib/redirect.php';
-require_once __DIR__ . '/../../app/Lib/Session.php';
-require_once(__DIR__ . '/../../app/Lib/SessionKey.php');
+require_once __DIR__ . '/../../app/Infrastructure/Dao/UserDao.php';
+require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-use app\Lib\SessionKey;
-
-$mail = filter_input(INPUT_POST, 'mail');
-$userName = filter_input(INPUT_POST, 'userName');
+$email = filter_input(INPUT_POST, 'email');
+$name = filter_input(INPUT_POST, 'name');
 $password = filter_input(INPUT_POST, 'password');
 $confirmPassword = filter_input(INPUT_POST, 'confirmPassword');
 
-$session = Session::getInstance();
-if (empty($password) || empty($confirmPassword)) $session->appendError("パスワードを入力してください");
-if ($password !== $confirmPassword) $session->appendError("パスワードが一致しません");
-
-if ($session->existsErrors()) {
-  $formInputs = [
-    'mail' => $mail,
-    'userName' => $userName,
-  ];
-  $formInputsKey = new SessionKey(SessionKey::FORM_INPUTS_KEY);
-  $session->setFormInputs($formInputsKey, $formInputs);
-  redirect('signin.php');
+session_start();
+if (empty($password) || empty($confirmPassword)) {
+    $_SESSION['errors'][] = 'パスワードを入力してください';
+}
+if ($password !== $confirmPassword) {
+    $_SESSION['errors'][] = 'パスワードが一致しません';
+}
+if (!empty($_SESSION['errors'])) {
+    $_SESSION['formInputs']['name'] = $name;
+    $_SESSION['formInputs']['email'] = $email;
+    redirect('./signup.php');
 }
 
-// メールアドレスに一致するユーザーの取得
-$user = findUserByMail($mail);
+$userDao = new UserDao();
+$user = $userDao->findByEmail($email);
 
-if (!is_null($user)) $session->appendError("すでに登録済みのメールアドレスです");
+if (!is_null($user)) {
+    $_SESSION['errors'][] = 'すでに登録済みのメールアドレスです';
+}
+if (!empty($_SESSION['errors'])) {
+    redirect('./signup.php');
+}
 
-if (!empty($_SESSION['errors'])) redirect('signup.php');
-
-// ユーザーの保存
-createUser($userName, $mail, $password);
-
-$successRegistedMessage = "登録できました。";
-$message = new SessionKey(SessionKey::MESSAGE_KEY);
-$session->setMessage($message, $successRegistedMessage);
-redirect('signin.php');
+$userDao->create($name, $email, $password);
+$_SESSION['message'] = '登録できました。';
+redirect('./signin.php');

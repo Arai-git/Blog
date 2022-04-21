@@ -1,6 +1,5 @@
 <?php
-require_once __DIR__ . '/../../app/Lib/redirect.php';
-
+require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
 session_start();
 
 $_SESSION = [];

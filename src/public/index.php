@@ -1,9 +1,9 @@
 <?php
 
-
-require_once __DIR__ . '/../app/Lib/redirect.php';
+require_once __DIR__ . '/../app/Infrastructure/Redirect/redirect.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/Lib/Session.php';
-require_once(__DIR__ . '/../app/Lib/seachOrder.php');
+require_once __DIR__ . '/../app/Lib/seachOrder.php';
 
 $session = Session::getInstance();
 if (!isset($_SESSION['formInputs']['userId'])) {
