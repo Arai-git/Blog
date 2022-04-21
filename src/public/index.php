@@ -22,6 +22,7 @@ $blogs = seachOrder();
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   <title>blog一覧</title>
 </head>
 
@@ -31,7 +32,8 @@ $blogs = seachOrder();
   <header>
     <h3>こんにちは、<?php echo $name; ?> さん</h3>
   </header>
-  <div>
+  <div class="blogs__wraper bg-green-300 py-20 px-20">
+    <div class="ml-8 mb-12">
     <h1>blog一覧</h1>
       <form action="index.php" method="get">
         <div>
@@ -46,7 +48,9 @@ $blogs = seachOrder();
           <br>
         </div>
       </form>
+    </div>
   </div>
+  <h2 class="mb-2 px-2 text-6xl font-bold text-green-800">blog一覧</h2>
   <table>
     <?php foreach ($blogs as $blog): ?>
       <tr>
