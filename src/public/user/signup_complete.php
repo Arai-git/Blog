@@ -3,6 +3,8 @@ require_once __DIR__ . '/../../app/Infrastructure/Dao/UserDao.php';
 require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Infrastructure\Dao\UserDao;
+
 $email = filter_input(INPUT_POST, 'email');
 $name = filter_input(INPUT_POST, 'name');
 $password = filter_input(INPUT_POST, 'password');
@@ -34,3 +36,4 @@ if (!empty($_SESSION['errors'])) {
 $userDao->create($name, $email, $password);
 $_SESSION['message'] = '登録できました。';
 redirect('./signin.php');
+?>
