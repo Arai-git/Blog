@@ -1,4 +1,6 @@
 <?php
+//namespace:このクラスはこのディレクトリに存在する
+namespace app\Lib;
 //use:このクラスをこのファイルで使う宣言
 use app\Lib\SessionKey;
 

@@ -2,8 +2,9 @@
 
 require_once __DIR__ . '/../app/Infrastructure/Redirect/redirect.php';
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../app/Lib/Session.php';
 require_once __DIR__ . '/../app/Lib/seachOrder.php';
+
+use app\Lib\Session;
 
 $session = Session::getInstance();
 if (!isset($_SESSION['formInputs']['userId'])) {
