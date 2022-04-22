@@ -1,28 +1,22 @@
 <?php
+namespace App\Infrastructure\Dao;
+
+require_once __DIR__ . '/../../../vendor/autoload.php';
+
+use PDO;
 
 /**
- * ユーザー情報を操作するDAO
+ * UserDaoが子クラス。
+ * Daoクラスが親クラスでデータベースを操作するDAO継承する。
+ * 
+ * 子クラスでは、ユーザーの登録機能とログイン機能の処理を行う。
  */
-final class UserDao
+final class UserDao extends Dao
 {
     /**
      * DBのテーブル名
      */
     const TABLE_NAME = 'users';
-    private $pdo;
-
-    public function __construct()
-    {
-        try {
-            $this->pdo = new PDO(
-                'mysql:dbname=blog;host=mysql;charset=utf8',
-                'root',
-                'password'
-            );
-        } catch (PDOException $e) {
-            exit('DB接続エラー:' . $e->getMessage());
-        }
-    }
 
     /**
      * ユーザーを追加する
@@ -50,7 +44,7 @@ final class UserDao
      * @param  string $mail
      * @return array | null
      */
-    public function findByEmail(?string $email): ?array
+    public function findByEmail(string $email): ?array
     {
         $sql = sprintf(
             'SELECT * FROM %s WHERE email = :email',
