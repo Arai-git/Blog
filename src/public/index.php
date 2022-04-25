@@ -1,13 +1,11 @@
 <?php
-
 require_once __DIR__ . '/../app/Infrastructure/Redirect/redirect.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/Lib/seachOrder.php';
 
-use app\Lib\Session;
+session_start();
 
-$session = Session::getInstance();
-if (!isset($_SESSION['formInputs']['userId'])) {
+if (!isset($_SESSION['user']['id'])) {
     redirect('./user/signin.php');
 }
 
@@ -30,9 +28,6 @@ $blogs = seachOrder();
 <?php require_once(__DIR__ . '/../app/Lib/header.php'); ?>
 
 <body>
-  <header>
-    <h3>こんにちは、<?php echo $name; ?> さん</h3>
-  </header>
   <div class="blogs__wraper bg-green-300 py-20 px-20">
     <div class="ml-8 mb-12">
     <h1>blog一覧</h1>
