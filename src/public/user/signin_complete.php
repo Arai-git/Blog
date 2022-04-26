@@ -18,7 +18,7 @@ try {
 
     $userEmail = new Email($email);
     $inputPassword = new InputPassword($password);
-    $useCaseInput = new SignInInput($userEmail->value(), $inputPassword->value());
+    $useCaseInput = new SignInInput($userEmail, $inputPassword);
     $useCase = new SignInInteractor($useCaseInput);
     $useCaseOutput = $useCase->handler();
 

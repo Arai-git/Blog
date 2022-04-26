@@ -25,7 +25,7 @@ try {
     $userName = new UserName($name);
     $userEmail = new Email($email);
     $userPassword = new InputPassword($password);
-    $useCaseInput = new SignUpInput($userName->value(), $userEmail->value(), $userPassword->value());
+    $useCaseInput = new SignUpInput($userName, $userEmail, $userPassword);
     $useCase = new SignUpInteractor($useCaseInput);
     $useCaseOutput = $useCase->handler();
 
