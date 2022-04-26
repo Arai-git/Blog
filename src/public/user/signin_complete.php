@@ -1,25 +1,32 @@
 <?php
-require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
 
-use App\Usecase\UseCaseInput\SignInInput;
-use App\Usecase\UseCaseInteractor\SignInInteractor;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\InputPassword;
+use App\UseCase\UseCaseInput\SignInInput;
+use App\UseCase\UseCaseInteractor\SignInInteractor;
 
 session_start();
 $email = filter_input(INPUT_POST, 'email');
 $password = filter_input(INPUT_POST, 'password');
 
-if (empty($email) || empty($password)) {
-    $_SESSION['errors'][] = 'パスワードとメールアドレスを入力してください';
-    redirect('./signin.php');
-}
-$useCaseInput = new SignInInput($email, $password);
-$useCase = new SignInInteractor($useCaseInput);
-$useCaseOutput = $useCase->handler();
+try {
+    if (empty($email) || empty($password)) {
+        throw new Exception('パスワードとメールアドレスを入力してください');
+    }
 
-if ($useCaseOutput->isSuccess()) {
+    $userEmail = new Email($email);
+    $inputPassword = new InputPassword($password);
+    $useCaseInput = new SignInInput($userEmail->value(), $inputPassword->value());
+    $useCase = new SignInInteractor($useCaseInput);
+    $useCaseOutput = $useCase->handler();
+
+    if (!$useCaseOutput->isSuccess()) {
+        throw new Exception($useCaseOutput->message());
+    }
     redirect('../index.php');
-} else {
-    $_SESSION['errors'][] = $useCaseOutput->message();
-    redirect('./signin.php');
+} catch (Exception $e) {
+    $_SESSION['errors'][] = $e->getMessage();
+    redirect('../index.php');
 }

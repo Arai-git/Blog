@@ -1,13 +1,15 @@
 <?php
-require_once __DIR__ . '/../../app/Infrastructure/Dao/UserDao.php';
-require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
 
-use App\Usecase\UseCaseInput\SignUpInput;
-use App\Usecase\UseCaseInteractor\SignUpInteractor;
+use App\Domain\ValueObject\UserName;
+use App\Domain\ValueObject\Email;
+use App\Domain\ValueObject\InputPassword;
+use App\UseCase\UseCaseInput\SignUpInput;
+use App\UseCase\UseCaseInteractor\SignUpInteractor;
 
 $email = filter_input(INPUT_POST, 'email');
-$name = filter_input(INPUT_POST, 'name');
+$name = filter_input(INPUT_POST, 'userName');
 $password = filter_input(INPUT_POST, 'password');
 $confirmPassword = filter_input(INPUT_POST, 'confirmPassword');
 
@@ -20,20 +22,21 @@ try {
         throw new Exception('パスワードが一致しません');
     }
 
-    //ガード節でここまで処理が行われれば、クラスの処理を行う。
-    $useCaseInput = new SignUpInput($name, $email, $password);
+    $userName = new UserName($name);
+    $userEmail = new Email($email);
+    $userPassword = new InputPassword($password);
+    $useCaseInput = new SignUpInput($userName->value(), $userEmail->value(), $userPassword->value());
     $useCase = new SignUpInteractor($useCaseInput);
     $useCaseOutput = $useCase->handler();
 
-
-    if (!$useCaseOutput->isSuccess()) {
+    if ($useCaseOutput->isSuccess()) {
         throw new Exception($useCaseOutput->message());
     }
     $_SESSION['message'][] = $useCaseOutput->message();
     redirect('./signin.php');
 } catch (Exception $e) {
     $_SESSION['errors'][] = $e->getMessage();
-    $_SESSION['formInputs']['name'] = $name;
-    $_SESSION['formInputs']['email'] = $email;
+    $_SESSION['user']['name'] = $name;
+    $_SESSION['user']['email'] = $email;
     redirect('./signup.php');
 }
