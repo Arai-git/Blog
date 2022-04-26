@@ -16,7 +16,7 @@ final class SignUpInteractor
     {
         $this->useCaseInput = $useCaseInput;
     }
-
+    
     /**
      * 既にメールアドレスが登録されていないか、入力されたメールアドレスとデータベースを照合。
      * データベースに入力されたメールアドレスがあれば、エラー文をreturn。
@@ -25,17 +25,18 @@ final class SignUpInteractor
     public function handler(): SignUpOutput
     {
         $userDao = new UserDao();
-        $user = $userDao->findByEmail($this->useCaseInput->email());
+        $user = $userDao->findByEmail($this->useCaseInput->email()->value());
 
         if (!is_null($user)) {
             return new SignUpOutput(false, self::ALLREADY_EXISTS_MESSAGE);
         }
 
         $userDao->create(
-            $this->useCaseInput->name(),
-            $this->useCaseInput->email(),
-            $this->useCaseInput->password()
+            $this->useCaseInput->name()->value(),
+            $this->useCaseInput->email()->value(),
+            $this->useCaseInput->password()->value()
         );
+
         return new SignUpOutput(true, self::COMPLETED_MESSAGE);
     }
 }
