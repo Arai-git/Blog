@@ -27,7 +27,7 @@ $email = $_SESSION['formInputs']['email'] ?? '';
         <p class="text-red-600"><?php echo $error; ?></p>
       <?php endforeach; ?>
       <form action="./signup_complete.php" method="POST">
-        <p><input class='border-2 border-gray-300 w-full mb-5' placeholder="User name" type=“text” name="name" required value="<?php echo $name; ?>"></p>
+        <p><input class='border-2 border-gray-300 w-full mb-5' placeholder="User name" type=“text” name="userName" required value="<?php echo $name; ?>"></p>
         <p><input class='border-2 border-gray-300 w-full mb-5' placeholder="Email" type=“mail” name="email" required value="<?php echo $email; ?>"></p>
         <p><input class='border-2 border-gray-300 w-full mb-5' placeholder="Password" type="password" name="password"></p>
         <p><input class='border-2 border-gray-300 w-full mb-5' placeholder="Password確認" type="password" name="confirmPassword"></p>
