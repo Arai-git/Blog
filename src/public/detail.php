@@ -5,8 +5,8 @@ require_once(__DIR__ . '/../app/Lib/findCommentByBlogId.php');
 
 session_start();
 
-$userId = $_SESSION['id'];
-$name = $_SESSION['name'];
+$userId = $_SESSION['user']['id'];
+$name = $_SESSION['user']['name'];
 
 $blogId = filter_input(INPUT_GET, 'id');
 
@@ -28,10 +28,6 @@ $comments = findCommentByBlogId($blogId);
   <title>記事詳細ページ</title>
 </head>
 <body>
-  <header>
-    <h3>こんにちは、<?php echo $name; ?> さん</h3>
-    <a href="index.php">一覧ページ</a>&emsp;&emsp;<a href="logout.php" name="logout">ログアウト</a>
-  </header>
   <div>
     <h1>記事詳細ページ</h1>
     <p>投稿日時：<?php echo $blog['created_at']; ?></p>

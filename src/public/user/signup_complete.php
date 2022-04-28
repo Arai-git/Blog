@@ -29,7 +29,7 @@ try {
     $useCase = new SignUpInteractor($useCaseInput);
     $useCaseOutput = $useCase->handler();
 
-    if ($useCaseOutput->isSuccess()) {
+    if (!$useCaseOutput->isSuccess()) {
         throw new Exception($useCaseOutput->message());
     }
     $_SESSION['message'][] = $useCaseOutput->message();
