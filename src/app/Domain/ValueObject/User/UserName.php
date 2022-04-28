@@ -1,5 +1,5 @@
 <?php
-namespace App\Domain\ValueObject;
+namespace App\Domain\ValueObject\User;
 use Exception;
 /**
  * ユーザーの名前用のValueObject

@@ -6,6 +6,8 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 use PDO;
 
 /**
+ * ユーザー情報を操作するDAO
+ * 
  * UserDaoが子クラス。
  * Daoクラスが親クラスでデータベースを操作するDAO継承する。
  * 
