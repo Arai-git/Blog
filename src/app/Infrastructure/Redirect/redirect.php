@@ -1,8 +1,21 @@
 <?php
+namespace App\Infrastructure\Redirect;
 
-function redirect(string $redirectPath): void
+/**
+ * リダイレクトを行うクラス
+ */
+final class Redirect
 {
-    header('Location: ' . $redirectPath);
-    exit();
+    /**
+     * 渡したパスにリダイレクトする
+     *
+     * @param string $path
+     * @return void
+     */
+    public static function handler(string $path): void
+    {
+        header('Location:' . $path);
+        exit();
+    }
 }
 ?>

@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
-
+use App\Infrastructure\Redirect\Redirect;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\InputPassword;
 use App\UseCase\UseCaseInput\SignInInput;
@@ -25,8 +24,8 @@ try {
     if (!$useCaseOutput->isSuccess()) {
         throw new Exception($useCaseOutput->message());
     }
-    redirect('../index.php');
+    Redirect::handler('../index.php');
 } catch (Exception $e) {
     $_SESSION['errors'][] = $e->getMessage();
-    redirect('../index.php');
+    Redirect::handler('./signin.php');
 }

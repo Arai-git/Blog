@@ -1,8 +1,8 @@
 <?php
-namespace App\UseCase\UseCaseInput;
 
+namespace App\UseCase\UseCaseInput;
 require_once __DIR__ . '/../../../vendor/autoload.php';
-use App\Domain\ValueObject\UserName;
+use App\Domain\ValueObject\User\UserName;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\InputPassword;
 
