@@ -6,8 +6,8 @@ require_once(__DIR__ . '/../app/Lib/session.php');
 
 session_start();
 
-$id = $_SESSION['id'];
-$name = $_SESSION['name'];
+$id = $_SESSION['user']['id'];
+$name = $_SESSION['user']['name'];
 
 if (!isset($id)) {
     header('Location: ./user/signin.php');

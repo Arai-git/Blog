@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . '/../Lib/pdoInit.php');
 
-function findBlogsById(int $id): ? array
+function findBlogsById(int $id): ?array
 {
 	$pdo = pdoInit();
   $sql = 'SELECT * FROM blogs WHERE user_id = :id';
