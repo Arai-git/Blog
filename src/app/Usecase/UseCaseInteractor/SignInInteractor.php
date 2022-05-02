@@ -1,15 +1,16 @@
 <?php
-namespace App\Usecase\UseCaseInteractor;
 
+namespace App\UseCase\UseCaseInteractor;
+require_once __DIR__ . '/../../../vendor/autoload.php';
+use App\Adapter\QueryServise\UserQueryServise;
+use App\UseCase\UseCaseInput\SignInInput;
+use App\UseCase\UseCaseOutput\SignInOutput;
 use App\Domain\Entity\User;
-use App\Domain\ValueObject\User\UserId;
-use App\Domain\ValueObject\User\UserName;
-use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\HashedPassword;
-use App\Usecase\UseCaseInput\SignInInput;
-use App\Usecase\UseCaseOutput\SignInOutput;
-use App\Infrastructure\Dao\UserDao;
+
 /**
+ * ログインユースケース
+ * 
  * 最初にUserDaoにアクセスし、データを取得。
  * $this->inputには、メールアドレスとパスワードが引数から格納されてくる。
  * findUserでメールアドレスを照合し、問題がなければ、セッションにユーザー情報が登録される。
@@ -27,19 +28,24 @@ final class SignInInteractor
      */
     const SUCCESS_MESSAGE = 'ログインしました';
 
-     /**
-     * @var UserDao
+    /**
+     * @var UserQueryServise
      */
-    private $userDao;
+    private $userQueryServise;
 
     /**
      * @var SignInInput
      */
     private $input;
 
+    /**
+     * コンストラクタ
+     *
+     * @param SignInInput $input
+     */
     public function __construct(SignInInput $input)
     {
-        $this->userDao = new UserDao();
+        $this->userQueryServise = new UserQueryServise();
         $this->input = $input;
     }
 
@@ -51,15 +57,13 @@ final class SignInInteractor
      */
     public function handler(): SignInOutput
     {
-        $userMapper = $this->findUser();
+        $user = $this->findUser();
 
-        if ($this->notExistsUser($userMapper)) {
+        if ($this->notExistsUser($user)) {
             return new SignInOutput(false, self::FAILED_MESSAGE);
         }
 
-        $user = $this->buildUserEntity($userMapper);
-
-        if ($this->isInvalidPassword($user->password()->value())) {
+        if ($this->isInvalidPassword($user->password())) {
             return new SignInOutput(false, self::FAILED_MESSAGE);
         }
 
@@ -70,36 +74,23 @@ final class SignInInteractor
 
     /**
      * ユーザーを入力されたメールアドレスで検索する
-     * 
+     *
      * @return array | null
      */
-    private function findUser(): ?array
+    private function findUser(): ?User
     {
-        return $this->userDao->findByEmail($this->input->email()->value());
+        return $this->userQueryServise->findByEmail($this->input->email());
     }
 
     /**
      * ユーザーが存在しない場合
      *
-     * @param array|null $userMapper
+     * @param array|null $user
      * @return boolean
      */
-    private function notExistsUser(?array $userMapper): bool
+    private function notExistsUser(?User $user): bool
     {
-        return is_null($userMapper);
-    }
-
-    /**
-     *　ユーザーの識別できる値が代入されている
-     *　UserMapperは、
-     */
-    private function buildUserEntity(array $userMapper): User
-    {
-        return new User(
-            new UserId($userMapper['id']), 
-            new UserName($userMapper['name']),
-            new Email($userMapper['email']),
-            new HashedPassword($userMapper['password']));
+        return is_null($user);
     }
 
     /**
@@ -108,9 +99,9 @@ final class SignInInteractor
      * @param HashedPassword $hashedPassword
      * @return boolean
      */
-    private function isInvalidPassword(string $password): bool
+    private function isInvalidPassword(HashedPassword $hashedPassword): bool
     {
-        return !password_verify($this->input->password()->value(), $password);
+        return !$hashedPassword->verify($this->input->password());
     }
 
     /**
@@ -121,7 +112,7 @@ final class SignInInteractor
      */
     private function saveSession(User $user): void
     {
-        $_SESSION['user']['id'] = $user->id();
-        $_SESSION['user']['name'] = $user->name();
+        $_SESSION['user']['id'] = $user->id()->value();
+        $_SESSION['user']['name'] = $user->name()->value();
     }
 }
