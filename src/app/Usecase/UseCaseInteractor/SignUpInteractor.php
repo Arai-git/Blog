@@ -1,60 +1,71 @@
 <?php
-namespace App\Usecase\UseCaseInteractor;
+namespace App\UseCase\UseCaseInteractor;
+require_once __DIR__ . '/../../../vendor/autoload.php';
+use App\Adapter\QueryServise\UserQueryServise;
+use App\Adapter\Repository\UserRepository;
+use App\UseCase\UseCaseInput\SignUpInput;
+use App\UseCase\UseCaseOutput\SignUpOutput;
+use App\Domain\ValueObject\User\NewUser;
+use App\Domain\Entity\User;
 
-use App\Usecase\UseCaseInput\SignUpInput;
-use App\Usecase\UseCaseOutput\SignUpOutput;
-use App\Infrastructure\Dao\UserDao;
-
+/**
+ * ユーザー登録ユースケース
+ */
 final class SignUpInteractor
 {
     /**
      * メールアドレスがすでに存在している場合のエラーメッセージ
      */
-    const ALLREADY_EXISTS_MESSAGE = "すでに登録済みのメールアドレスです";
+    const ALLREADY_EXISTS_MESSAGE = 'すでに登録済みのメールアドレスです';
 
     /**
-    * ユーザー登録成功時のメッセージ
-    */
-    const COMPLETED_MESSAGE = "登録が完了しました";
+     * ユーザー登録成功時のメッセージ
+     */
+    const COMPLETED_MESSAGE = '登録が完了しました';
 
     /**
-    * @var UserDao
-    */
-    private $userDao;
+     * @var UserRepository
+     */
+    private $userRepository;
 
     /**
-    * @var SignUpInput
-    */
-    private $useCaseInput;
+     * @var UserQueryServise
+     */
+    private $userQueryServise;
 
     /**
-    * コンストラクタ
-    *
-    * @param SignUpInput $input
-    */
-    public function __construct(SignUpInput $useCaseInput)
+     * @var SignUpInput
+     */
+    private $input;
+
+    /**
+     * コンストラクタ
+     *
+     * @param SignUpInput $input
+     */
+    public function __construct(SignUpInput $input)
     {
-        $this->userDao = new UserDao();
-        $this->useCaseInput = $useCaseInput;
+        $this->userRepository = new UserRepository();
+        $this->userQueryServise = new UserQueryServise();
+        $this->input = $input;
     }
-    
     /**
      * 既にメールアドレスが登録されていないか、入力されたメールアドレスとデータベースを照合。
      * データベースに入力されたメールアドレスがあれば、エラー文をreturn。
      * nullが返されていれば、新規登録を行い、登録しましたという文を返す。
+     *
+     * 
+     * ユーザー登録処理
+     * すでに存在するメールアドレスの場合はエラーとする
+     *
+     * @return SignUpOutput
      */
-    /**
-    * ユーザー登録処理
-    * すでに存在するメールアドレスの場合はエラーとする
-    *
-    * @return SignUpOutput
-    */
     public function handler(): SignUpOutput
     {
-        $userMapper = $this->findUser();
+        $user = $this->findUser();
 
-        if ($this->existsUser($userMapper)) {
-        return new SignUpOutput(false, self::ALLREADY_EXISTS_MESSAGE);
+        if ($this->existsUser($user)) {
+            return new SignUpOutput(false, self::ALLREADY_EXISTS_MESSAGE);
         }
 
         $this->signup();
@@ -66,9 +77,9 @@ final class SignUpInteractor
      *
      * @return array
      */
-    private function findUser(): ?array
+    private function findUser(): ?User
     {
-        return $this->userDao->findByEmail($this->useCaseInput->email()->value());
+        return $this->userQueryServise->findByEmail($this->input->email());
     }
 
     /**
@@ -77,7 +88,7 @@ final class SignUpInteractor
      * @param array|null $user
      * @return boolean
      */
-    private function existsUser(?array $user): bool
+    private function existsUser(?User $user): bool
     {
         return !is_null($user);
     }
@@ -89,6 +100,12 @@ final class SignUpInteractor
      */
     private function signup(): void
     {
-        $this->userDao->create($this->useCaseInput->name()->value(), $this->useCaseInput->email()->value(), $this->useCaseInput->password()->value());
+        $this->userRepository->insert(
+            new NewUser(
+                $this->input->name(),
+                $this->input->email(),
+                $this->input->password()
+            )
+        );
     }
 }

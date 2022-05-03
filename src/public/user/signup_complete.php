@@ -1,8 +1,7 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
-require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
-
-use App\Domain\ValueObject\UserName;
+use App\Infrastructure\Redirect\Redirect;
+use App\Domain\ValueObject\User\UserName;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\InputPassword;
 use App\UseCase\UseCaseInput\SignUpInput;
@@ -32,11 +31,11 @@ try {
     if (!$useCaseOutput->isSuccess()) {
         throw new Exception($useCaseOutput->message());
     }
-    $_SESSION['message'][] = $useCaseOutput->message();
-    redirect('./signin.php');
+    $_SESSION['message'] = $useCaseOutput->message();
+    Redirect::handler('./signin.php');
 } catch (Exception $e) {
     $_SESSION['errors'][] = $e->getMessage();
     $_SESSION['user']['name'] = $name;
     $_SESSION['user']['email'] = $email;
-    redirect('./signup.php');
+    Redirect::handler('./signup.php');
 }

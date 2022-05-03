@@ -1,15 +1,15 @@
 <?php
 
-namespace App\UseCase\UseCaseInput;
-require_once __DIR__ . '/../../../vendor/autoload.php';
+namespace App\Domain\ValueObject\User;
+require_once __DIR__ . '/../../../../vendor/autoload.php';
 use App\Domain\ValueObject\User\UserName;
 use App\Domain\ValueObject\Email;
 use App\Domain\ValueObject\InputPassword;
 
 /**
- * ユーザー登録ユースケースの入力値
+ * 新規登録ユーザーのValueObject
  */
-final class SignUpInput
+final class NewUser
 {
     /**
      * @var UserName
@@ -26,13 +26,6 @@ final class SignUpInput
      */
     private $password;
 
-    /**
-     * コンストラクタ
-     *
-     * @param UserName $name
-     * @param Email $email
-     * @param InputPassword $password
-     */
     public function __construct(
         UserName $name,
         Email $email,
@@ -43,25 +36,16 @@ final class SignUpInput
         $this->password = $password;
     }
 
-    /**
-     * @return UserName
-     */
     public function name(): UserName
     {
         return $this->name;
     }
 
-    /**
-     * @return Email
-     */
     public function email(): Email
     {
         return $this->email;
     }
 
-    /**
-     * @return InputPassword
-     */
     public function password(): InputPassword
     {
         return $this->password;

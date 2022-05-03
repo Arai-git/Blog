@@ -1,16 +1,15 @@
 <?php
-require_once __DIR__ . '/../app/Infrastructure/Redirect/redirect.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../app/Lib/seachOrder.php';
+use App\Infrastructure\Redirect\Redirect;
 
 session_start();
-
 if (!isset($_SESSION['user']['id'])) {
-    redirect('./user/signin.php');
+    Redirect::handler('./user/signin.php');
 }
 
-$id = $_SESSION['id'];
-$name = $_SESSION['name'];
+$id = $_SESSION['user']['id'];
+$name = $_SESSION['user']['name'];
 
 $blogs = seachOrder();
 ?>

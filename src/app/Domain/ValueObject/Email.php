@@ -1,5 +1,7 @@
 <?php
 namespace App\Domain\ValueObject;
+require_once __DIR__ . '/../../../vendor/autoload.php';
+use App\Infrastructure\Redirect\Redirect;
 
 use Exception;
 /**
